@@ -1,8 +1,6 @@
 #include <math.h>
 #include <stdio.h>
 
-// Вывести сумму ряда -1^(n + 1) * (x-1)^n / (n-1)! с точностью eps = 10^-4, x [0; 2]
-
 int main()
 {
     const double eps = 1e-4;
