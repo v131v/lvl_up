@@ -1,9 +1,6 @@
 #include <math.h>
 #include <stdio.h>
 
-// Вывести сумму ряда f(x) = 1/2 * x + 2/3 * x^2 + 3/4 * x^3 + 4/5 * x^4 + ... с точностью
-// e = 10^-5
-
 int main()
 {
     double sum = 0;
