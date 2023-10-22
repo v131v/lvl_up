@@ -1,9 +1,6 @@
 #include <math.h>
 #include <stdio.h>
 
-// Определить является ли натуральное число палиндромом
-// Пример 12321, 145541
-//        43210
 int main()
 {
     unsigned long long x;
