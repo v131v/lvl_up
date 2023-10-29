@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// Дана строка символов. Определить, является ли она палиндромом.
-
 int main()
 {
     constexpr int length = 255;
