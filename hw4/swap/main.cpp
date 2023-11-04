@@ -1,15 +1,20 @@
 #include <stdio.h>
+#include <time.h>
+#include <random>
 
 int main()
 {
-    constexpr int size = 10;
+    srand(time(0));
+
+    constexpr int size = 40;
     int ar[size] = {};
 
-    printf("enter 40 numbers:\n");
-
+    printf("numbers:\n");
     for (int i = 0; i < size; i++) {
-        scanf("%d", &ar[i]);
+        ar[i] = rand() % 100 - 50;
+        printf("%d ", ar[i]);
     }
+    printf("\n");
 
     int mxIdx = 0;
     int lastNegIdx = 0;
@@ -23,6 +28,8 @@ int main()
             lastNegIdx = i;
         }
     }
+
+    printf("max: %d; last negative: %d\n", ar[mxIdx], ar[lastNegIdx]);
 
     // swap
     ar[mxIdx] += ar[lastNegIdx];
