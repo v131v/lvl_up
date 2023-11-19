@@ -1,6 +1,21 @@
+#include "find.h"
+
 #include <stdio.h>
 #include <time.h>
-#include <random>
+#include <stdlib.h>
+
+void fillAr(int *ar, int n, int maxValue) {
+    for (int i = 0; i < n; ++i) {
+        ar[i] = rand() % maxValue;
+    }
+}
+
+void printAr(int *ar, int n) {
+    for (int i = 0; i < n; ++i) {
+        printf("%d ", ar[i]);
+    }
+    printf("\n");
+}
 
 int main()
 {
@@ -12,39 +27,22 @@ int main()
 
     const int maxValue = 10;
 
-    printf("numbers in A array:\n");
-    for (int i = 0; i < sizeA; i++) {
+    fillAr(a, sizeA, maxValue);
+    fillAr(b, sizeB, maxValue);
 
-        a[i] = rand() % maxValue;
-        printf("%d ", a[i]);
-    }
-    printf("\n");
+    printf("numbers in A array:\n");
+    printAr(a, sizeA);
 
     printf("numbers in B array:\n");
-    for (int i = 0; i < sizeB; i++) {
-
-        b[i] = rand() % maxValue;
-        printf("%d ", b[i]);
-    }
-    printf("\n");
+    printAr(b, sizeB);
 
     printf("indexies:\n");
-    for (int i = 0; i < sizeA; i++) {
 
-        bool fg = true;
-        for (int j = 0; j < sizeB; j++) {
+    int ans[sizeA] = {};
 
-            if (a[i] == b[j]) {
-                fg = false;
-                break;
-            }
-        }
+    const int ansLen = find(a, sizeA, b, sizeB, ans);
 
-        if (fg) {
-            printf("%d ", i);
-        }
-    }
-    printf("\n");
+    printAr(ans, ansLen);
 
     return 0;
 }
