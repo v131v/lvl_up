@@ -1,6 +1,32 @@
+#include "sum_left.h"
+
 #include <stdio.h>
 #include <time.h>
 #include <random>
+
+void fillMatrix(int h, int w, int *matrix, int from, int to) {
+
+    for (int i = 0; i < h; i++) {
+
+        for (int j = 0; j < w; j++) {
+
+            *(matrix + i * w + j) = rand() % (to - from) + from;
+        }
+    }
+}
+
+void printMatrix(int h, int w, int *matrix) {
+
+    for (int i = 0; i < h; i++) {
+
+        for (int j = 0; j < w; j++) {
+
+            printf("%d ", *(matrix + i * w + j));
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 int main()
 {
@@ -13,29 +39,12 @@ int main()
 
     const int maxValue = 10;
 
+    fillMatrix(h, w, matrix[0], 0, maxValue);
+
     printf("matrix:\n");
-    for (int i = 0; i < h; i++) {
+    printMatrix(h, w, matrix[0]);
 
-        for (int j = 0; j < w; j++) {
-
-            matrix[i][j] = rand() % maxValue;
-            printf("%d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-
-    int sum = 0;
-
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            if ((w - j - 1) > i) {
-                sum += matrix[i][j];
-            }
-        }
-    }
-
-    printf("sum = %d\n", sum);
+    printf("sum = %d\n", sumLeft(matrix[0], h, w));
 
     return 0;
 }
