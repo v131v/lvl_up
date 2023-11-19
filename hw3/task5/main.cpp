@@ -1,3 +1,5 @@
+#include "sum.h"
+
 #include <math.h>
 #include <stdio.h>
 
@@ -15,16 +17,7 @@ int main()
         return 0;
     }
 
-    double add = x;
-    double sum = add;
-
-    for (unsigned long long i = 1; fabs(add) > eps; i++) {
-        add *= x * x;
-        add *= ((double)((2 * i - 1) * (2 * i - 1)) / (double)((2 * i) * (2 * i + 1)));
-        sum += add;
-    }
-
-    printf("sum = %lf\n", sum);
+    printf("sum = %lf\n", sum(x, eps));
 
     return 0;
 }
