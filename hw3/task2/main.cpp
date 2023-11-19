@@ -1,3 +1,5 @@
+#include "lowestCommonDivisor.h"
+
 #include <stdio.h>
 
 int main()
@@ -9,18 +11,7 @@ int main()
     printf("enter 3 natural numbers:\n");
     scanf("%llu %llu %llu", &a, &b, &c);
 
-    unsigned long long min = (a > b && a > c ? a : (b > c ? b : c));
-
-    unsigned long long d = 1;
-
-    for (unsigned long long i = 2; i*i <= min; i++) {
-        if (a % i == 0 && b % i == 0 && c % i == 0) {
-            d = i;
-            break;
-        }
-    }
-
-    printf("lower common divisor: %llu\n", d);
+    printf("lower common divisor: %llu\n", lowestCommonDivisor(a, b, c));
 
     return 0;
 }
