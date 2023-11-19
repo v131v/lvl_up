@@ -1,6 +1,21 @@
+#include "swap_numbers.h"
+
 #include <stdio.h>
 #include <time.h>
 #include <random>
+
+void fillAr(int *ar, int n, int from, int to) {
+    for (int i = 0; i < n; ++i) {
+        ar[i] = rand() % (to - from) + from;
+    }
+}
+
+void printAr(int *ar, int n) {
+    for (int i = 0; i < n; ++i) {
+        printf("%d ", ar[i]);
+    }
+    printf("\n");
+}
 
 int main()
 {
@@ -9,38 +24,15 @@ int main()
     constexpr int size = 40;
     int ar[size] = {};
 
+    fillAr(ar, size, -50, 50);
+
     printf("numbers:\n");
-    for (int i = 0; i < size; i++) {
-        ar[i] = rand() % 100 - 50;
-        printf("%d ", ar[i]);
-    }
-    printf("\n");
+    printAr(ar, size);
 
-    int mxIdx = 0;
-    int lastNegIdx = 0;
-
-    for (int i = 1; i < size; i++) {
-        if (ar[mxIdx] < ar[i]) {
-            mxIdx = i;
-        }
-
-        if (ar[i] < 0) {
-            lastNegIdx = i;
-        }
-    }
-
-    printf("max: %d; last negative: %d\n", ar[mxIdx], ar[lastNegIdx]);
-
-    // swap
-    ar[mxIdx] += ar[lastNegIdx];
-    ar[lastNegIdx] = ar[mxIdx] - ar[lastNegIdx];
-    ar[mxIdx] -= ar[lastNegIdx];
+    swapNums(ar, size);
 
     printf("result:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%d ", ar[i]);
-    }
-    printf("\n");
+    printAr(ar, size);
 
     return 0;
 }
