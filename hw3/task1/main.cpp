@@ -1,3 +1,5 @@
+#include "numlen.h"
+
 #include <math.h>
 #include <stdio.h>
 
@@ -8,9 +10,7 @@ int main()
     printf("enter natural number:\n");
     scanf("%llu", &n);
 
-    unsigned long long len = floor(log10(n)) + 1;
-
-    printf("length of number: %llu\n", len);
+    printf("length of number: %llu\n", numlen(n));
 
     return 0;
 }
