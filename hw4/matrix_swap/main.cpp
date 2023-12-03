@@ -1,6 +1,31 @@
+#include "swap_matrix.h"
+
 #include <stdio.h>
 #include <time.h>
 #include <random>
+
+void fillMatrix(int size, int* mat, int maxValue) {
+
+    for (int i = 0; i < size; i++) {
+
+        for (int j = 0; j < size; j++) {
+
+            mat[i * size + j] = rand() % maxValue;
+        }
+    }
+}
+
+void printMatrix(int size, int* mat) {
+
+    for (int i = 0; i < size; i++) {
+
+        for (int j = 0; j < size; j++) {
+
+            printf("%2d ", mat[i * size + j]);
+        }
+        printf("\n");
+    }
+}
 
 int main()
 {
@@ -11,16 +36,10 @@ int main()
     const int maxValue = 10;
     int matrix[size][size] = {};
 
+    fillMatrix(size, &matrix[0][0], maxValue);
+
     printf("matrix:\n");
-    for (int i = 0; i < size; i++) {
-
-        for (int j = 0; j < size; j++) {
-
-            matrix[i][j] = rand() % maxValue;
-            printf("%2d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
+    printMatrix(size, &matrix[0][0]);
     printf("\n");
 
     int k;
@@ -33,25 +52,10 @@ int main()
         return 0;
     }
 
-    for (int i = 0; i < size; i++) {
-
-        if (i == k) continue;
-
-        // swap
-        matrix[i][k] += matrix[k][i];
-        matrix[k][i] = matrix[i][k] - matrix[k][i];
-        matrix[i][k] -= matrix[k][i];
-    }
+    swapMatrix(size, &matrix[0][0], k);
 
     printf("result:\n");
-    for (int i = 0; i < size; i++) {
-
-        for (int j = 0; j < size; j++) {
-
-            printf("%2d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
+    printMatrix(size, &matrix[0][0]);
     printf("\n");
     return 0;
 }
