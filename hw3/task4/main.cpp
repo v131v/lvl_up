@@ -9,7 +9,12 @@ int main()
     printf("enter integer number:\n");
     scanf("%lld", &n);
 
-    printBinary(n);
+    constexpr int BINARY_MAX_LENGTH = 64;
+    char str[BINARY_MAX_LENGTH] = "";
+
+    getBinary(n, str);
+
+    printf("%s\n", str);
 
     return 0;
 }
