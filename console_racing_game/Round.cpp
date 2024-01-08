@@ -4,11 +4,11 @@
 
 #include "Round.h"
 #include "Sprites.h"
-#include "GameObjects.h"
-#include "Generator.h"
+#include "Engine/GameObjects.h"
+#include "Engine/Generator.h"
 
 Round* CreateRound(int w, int h) {
-    //srand(time(0));
+    srand(time(0));
 
     Car *player = createCar();
     player->collider.approximate.x = (w - player->collider.approximate.w) / 2;

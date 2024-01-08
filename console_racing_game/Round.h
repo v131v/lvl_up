@@ -3,8 +3,8 @@
 
 #include <list>
 
-#include "Collider.h"
-#include "GameObjects.h"
+#include "Engine/Collider.h"
+#include "Engine/GameObjects.h"
 
 struct Round {
     int w;
