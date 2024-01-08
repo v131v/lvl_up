@@ -150,6 +150,7 @@ void RoundNextState(Round *round) {
         if (it != round->points.end()) {
             round->points.erase(it);
             round->score++;
+            delete *it;
         }
 
         Rectangle nextPathState = GenerateNextPath(round->pathGenerator, round->map);

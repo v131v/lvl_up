@@ -6,8 +6,6 @@
 #include "Sprites.h"
 
 Game* CreateGame() {
-    Game *game = new Game();
-
     initscr();
     noecho();
     curs_set(0);
@@ -20,8 +18,9 @@ Game* CreateGame() {
     init_pair(COLORS_MAGENTA_BLACK, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(COLORS_CYAN_BLACK, COLOR_CYAN, COLOR_BLACK);
 
+    Game *game = new Game();
     getmaxyx(stdscr, game->h, game->w);
-    game->menu = CreateMenu();
+    game->menu = new Menu();
 
     return game;
 }

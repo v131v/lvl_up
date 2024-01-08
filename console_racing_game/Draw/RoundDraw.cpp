@@ -32,6 +32,8 @@ void RoundDraw(Round *round, int w, int h){
             break;
         }
 
+        if (car == nullptr) continue;
+
         SpriteDraw(
                     car->sprite,
                     car->collider.approximate.x - round->camX,
@@ -47,6 +49,8 @@ void RoundDraw(Round *round, int w, int h){
         if (point->collider.approximate.y + point->collider.approximate.h < round->camY) {
             break;
         }
+
+        if (point == nullptr) continue;
 
         SpriteDraw(
                     point->sprite,

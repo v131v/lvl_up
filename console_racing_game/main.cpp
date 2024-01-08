@@ -10,10 +10,9 @@ using namespace std;
 void keyListener(Game *game) {
     constexpr char ESC_BUTTON = 27;
     constexpr char ENTER_BUTTON = '\n';
+    int ch = getch();
 
     while (game->status != STATUS_EXIT) {
-        int ch = getch();
-
         switch (ch) {
         case 'a':
             MoveLeft(game);
@@ -36,6 +35,8 @@ void keyListener(Game *game) {
         default:
             break;
         }
+
+        ch = getch();
     }
 }
 
@@ -51,6 +52,8 @@ int main(int argc, char *argv[]) {
     Game *game = CreateGame();
 
     thread draw(drawLoop, game);
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+
     thread listener(keyListener, game);
 
     draw.join();

@@ -10,6 +10,4 @@ struct Menu {
     int activeOption = 0;
 };
 
-Menu* CreateMenu();
-
 #endif // MENU_H
