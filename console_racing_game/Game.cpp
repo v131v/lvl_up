@@ -25,7 +25,7 @@ Game* CreateGame() {
     return game;
 }
 
-void EndGame(Game *game) {
+void DestroyGame(Game *game) {
     if (game == nullptr) return;
 
     endwin();

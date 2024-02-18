@@ -29,7 +29,7 @@ struct Game {
 
 Game* CreateGame();
 
-void EndGame(Game *game);
+void DestroyGame(Game *game);
 
 void ChangeStatus(Game *game);
 

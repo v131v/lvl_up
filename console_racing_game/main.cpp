@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     draw.join();
     listener.join();
 
-    EndGame(game);
+    DestroyGame(game);
 
     return 0;
 }
