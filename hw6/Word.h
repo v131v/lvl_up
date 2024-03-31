@@ -3,45 +3,49 @@
 
 class Word {
 private:
-    unsigned long _cap = 0;
-    unsigned long _len = 0;
-    char* _str = nullptr;
-    mutable unsigned long long _hash = 0;
+    unsigned long _capacity = minCap;
+    unsigned long _length = 0;
+    char* _data = nullptr;
+    unsigned long long _hash = 0;
 
 public:
     static constexpr unsigned long long hashBase = 31;
     static constexpr unsigned long long hashMod = 1e9+7;
-    static constexpr unsigned long minCap = 46;
+    static constexpr unsigned long minCap = 10;
 
     Word();
-    Word(const char c);
     Word(const char* s);
-    Word(const Word& b);
-    Word(Word&& b);
+    Word(const Word& other);
+    Word(Word&& other);
 
     ~Word();
 
-    bool operator ==(const Word& b) const;
-    bool operator !=(const Word& b) const;
+    void swap(Word& other) noexcept;
 
-    Word&& operator +(const Word& b) const;
-    Word& operator +=(const Word& b);
+    friend bool operator == (const Word& a, const Word& b);
+    friend bool operator != (const Word& a, const Word& b);
+    friend Word operator + (const Word& a, const Word& b);
 
-    Word& operator =(const Word& b);
-    Word& operator =(Word&& b);
+    Word& operator += (const Word& other);
+    Word& operator += (char c);
 
-    char& operator [](int i);
-    const char& operator [](int i) const;
+    Word& operator = (const Word& other);
+    Word& operator = (Word&& other);
+
+    char& operator [] (int i);
+    const char& operator [] (int i) const;
 
     unsigned long length() const;
 
     unsigned long capacity() const;
 
-    void shrinkToFit();
-
     const char* c_str() const;
 
     unsigned long long hash() const;
 };
+
+bool operator == (const Word& a, const Word& b);
+bool operator != (const Word& a, const Word& b);
+Word operator + (const Word& a, const Word& b);
 
 #endif // WORD_H

@@ -3,199 +3,169 @@
 #include <algorithm>
 #include <cstring>
 
-Word::Word():
-    _cap(0),
-    _len(0),
-    _str(nullptr),
-    _hash(0)
+Word::Word()
+    : _capacity(minCap)
+    , _length(0)
+    , _data(new char[_capacity + 1]{})
+    , _hash(0)
 {}
 
-Word::Word(const char c):
-    _cap(2),
-    _len(1),
-    _str(new char[]{c, '\0'}),
-    _hash(c-'a')
-{}
-
-Word::Word(const char* s) {
-    const unsigned long len = strlen(s);
-    if (len == 0) {
-        _cap = 0;
-        _len = 0;
-        _str = nullptr;
-        _hash = 0;
-        return;
-    }
-
-    _cap = std::min(len + 1, minCap);
-    _len = len;
-    _str = new char[_cap];
-    strcpy(_str, s);
-    hash();
-}
-
-Word::Word(const Word& b):
-    _cap(b.capacity()),
-    _len(b.length()),
-    _str(nullptr),
-    _hash(b.hash())
+Word::Word(const char* s)
+    : _capacity(std::min(strlen(s), minCap))
+    , _length(strlen(s))
+    , _data(new char[_capacity + 1]{})
+    , _hash(0)
 {
-    if (_cap > 0) {
-        _str = new char[_cap];
-        strcpy(_str, b._str);
+    if (_length > 0) {
+        strncpy(_data, s, _length);
+        _hash = hash();
     }
 }
 
-Word::Word(Word&& b):
-    _cap(b.capacity()),
-    _len(b.length()),
-    _str(b._str),
-    _hash(b.hash())
+Word::Word(const Word& other)
+    : _capacity(other._capacity)
+    , _length(other._length)
+    , _data(new char[_capacity + 1]{})
+    , _hash(other._hash)
 {
-    b._cap = 0;
-    b._len = 0;
-    b._str = nullptr;
-    b._hash = 0;
+    if (_length > 0) {
+        strncpy(_data, other._data, _length);
+    }
+}
+
+Word::Word(Word&& other)
+    : _capacity(other._capacity)
+    , _length(other._length)
+    , _data(other._data)
+    , _hash(other._hash)
+{
+    other._capacity = 0;
+    other._length = 0;
+    other._data = nullptr;
+    other._hash = 0;
 }
 
 Word::~Word() {
-    if (_str != nullptr) {
-        delete[] _str;
-    }
+    delete[] _data;
 }
 
-bool Word::operator ==(const Word& b) const {
-    if (hash() != b.hash()) {
+void Word::swap(Word& other) noexcept {
+    using std::swap;
+    swap(_capacity, other._capacity);
+    swap(_length, other._length);
+    swap(_data, other._data);
+    swap(_hash, other._hash);
+}
+
+bool operator == (const Word& a, const Word& b) {
+    if (a.hash() != b.hash() || a.length() != b.length()) {
         return false;
     }
-    if (_str == nullptr && b._str == nullptr) {
-        return true;
-    }
-    if ((_str == nullptr) ^ (b._str == nullptr)) {
-        return false;
-    }
-    return strcmp(_str, b.c_str()) == 0;
+    return strncmp(a._data, b._data, a.length()) == 0;
 }
 
-bool Word::operator !=(const Word& b) const {
-    return !(*this == b);
+bool operator != (const Word& a, const Word& b) {
+    return !(a == b);
 }
 
-Word&& Word::operator +(const Word& b) const {
-    Word newStr(*this);
+Word operator + (const Word& a, const Word& b) {
+    Word newStr(a);
     newStr += b;
-    return std::move(newStr);
+    return newStr;
 }
 
-Word& Word::operator +=(const Word& b) {
-    if (b.length() == 0) {
+Word& Word::operator += (const Word& other) {
+    if (other.length() == 0) {
         return *this;
     }
 
-    if (_len + b.length() + 1 > _cap || _str == nullptr) {
-        _cap = std::max(minCap, std::max(_cap * 2, _len + b.length() + 1));
+    if (_length + other._length > _capacity) {
+        _capacity = std::max(minCap, std::max(_capacity * 2, _length + other._length));
 
-        char* result = new char[_cap];
+        char* result = new char[_capacity + 1];
 
-        if (_str != nullptr) {
-            strcpy(result, _str);
-            delete[] _str;
-        }
+        strncpy(result, _data, _length);
+        delete[] _data;
 
-        _str = result;
+        _data = result;
     }
 
-    strcpy(_str + _len, b.c_str());
-    _len += b.length();
+    strncpy(_data + _length, other._data, other._length);
+    _length += other._length;
 
-    for (unsigned long i = 0; i < b.length(); ++i) {
+    for (unsigned long i = 0; i < other._length; ++i) {
         _hash = (_hash * hashBase) % hashMod;
     }
-    _hash = (_hash + b.hash()) % hashMod;
+    _hash = (_hash + other._hash) % hashMod;
 
     return *this;
 }
 
-Word& Word::operator =(const Word& b) {
-    _cap = b.capacity();
-    _len = b.length();
-    _hash = b.hash();
+Word& Word::operator += (char c) {
+    if (_length + 1 > _capacity) {
+        _capacity = std::max(minCap, std::max(_capacity * 2, _length + 1));
 
-    if (_cap > 0) {
-        _str = new char[_cap];
-        strcpy(_str, b.c_str());
+        char* result = new char[_capacity + 1];
+
+        strncpy(result, _data, _length);
+        delete[] _data;
+
+        _data = result;
     }
 
+    _data[_length] = c;
+    ++_length;
+
+    _hash = (_hash * hashBase) % hashMod;
+    _hash = (_hash + (c-'a')) % hashMod;
+
     return *this;
 }
 
-Word& Word::operator =(Word&& b) {
-    _cap = b.capacity();
-    _len = b.length();
-    _hash = b.hash();
-
-    if (_str != nullptr) {
-        delete[] _str;
-    }
-    _str = b._str;
-
-    b._str = nullptr;
+Word& Word::operator = (const Word& other) {
+    Word copied(other);
+    swap(copied);
     return *this;
 }
 
-char& Word::operator [](int i) {
-    return _str[i];
+Word& Word::operator = (Word&& other) {
+    Word moved(std::move(other));
+    swap(moved);
+    return *this;
 }
 
-const char& Word::operator [](int i) const {
-    return _str[i];
+char& Word::operator [] (int i) {
+    return _data[i];
+}
+
+const char& Word::operator [] (int i) const {
+    return _data[i];
 }
 
 unsigned long Word::length() const {
-    return _len;
+    return _length;
 }
 
 unsigned long Word::capacity() const {
-    return _cap;
-}
-
-void Word::shrinkToFit() {
-    if (_cap == _len + 1 || _str == nullptr) {
-        return;
-    }
-
-    _cap = _len + 1;
-    if (_len == 0) {
-        _cap = 0;
-    }
-
-    char* result = nullptr;
-    if (_cap > 0) {
-        result = new char[_cap];
-
-        if (_str != nullptr) {
-            strcpy(result, _str);
-            delete[] _str;
-        }
-    }
-
-    _str = result;
+    return _capacity;
 }
 
 const char* Word::c_str() const {
-    if (_str == nullptr) {
+    if (_data == nullptr) {
         return "";
     }
-    return _str;
+    return _data;
 }
 
 unsigned long long Word::hash() const {
-    if (_hash == 0 && _str != nullptr) {
-        for (unsigned long i = 0; i < _len; ++i) {
-            _hash = (_hash * hashBase) % hashMod;
-            _hash = (_hash + _str[i] - 'a') % hashMod;
+    unsigned long hash = _hash;
+
+    if (hash == 0) {
+        for (unsigned long i = 0; i < _length; ++i) {
+            hash = (hash * hashBase) % hashMod;
+            hash = (hash + _data[i] - 'a') % hashMod;
         }
     }
 
-    return _hash;
+    return hash;
 }

@@ -7,8 +7,6 @@ int main() {
     String s2("world");
 
     String s3(std::move(s1));
-
-    s3.print();
     std::cout << std::endl;
 
     String hw = s3 + s2;

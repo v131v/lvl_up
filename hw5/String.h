@@ -6,6 +6,7 @@ private:
     unsigned long _cap = 0;
     unsigned long _len = 0;
     char* _str = nullptr;
+    unsigned long _hash = 0;
 
 public:
     String();

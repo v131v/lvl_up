@@ -2,6 +2,7 @@
 #define HASHTABLE_H
 
 #include "Word.h"
+#include "PrimeNumberGenerator.h"
 
 #include <vector>
 
@@ -13,14 +14,17 @@ struct Value {
 };
 
 class HashTable {
-    unsigned long _m = 10;
-    unsigned long _n = 1<<_m;
+private:
+    unsigned long _maxLoadFactor = 0;
+    unsigned long _bucketsCount = 0;
     unsigned long _size = 0;
+    const PrimeNumberGenerator* const _primes = nullptr;
     mutable vector<vector<Value*>> _data;
+
 public:
     HashTable();
 
-    HashTable(int m, int n);
+    HashTable(const PrimeNumberGenerator* const primes);
 
     ~HashTable();
 

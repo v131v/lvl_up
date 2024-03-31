@@ -1,11 +1,16 @@
 #include "HashTable.h"
+#include "PrimeNumberGenerator.h"
 
 HashTable::HashTable() {
-    _data.resize(_n);
+    _data.resize(_bucketsCount);
 }
 
-HashTable::HashTable(int m, int n) : _m(m), _n(n) {
-    _data.resize(_n);
+HashTable::HashTable(const PrimeNumberGenerator* const primes)
+    : _maxLoadFactor(0)
+    , _bucketsCount(13)
+    , _primes(primes)
+{
+    _data.resize(_bucketsCount);
 }
 
 HashTable::~HashTable() {
@@ -24,10 +29,10 @@ Value* HashTable::inc(const Word& s) {
         return target;
     }
 
-    unsigned long hash = s.hash() % _n;
-    if (_data[hash].size() + 1 >= _m) {
+    unsigned long hash = s.hash() % _bucketsCount;
+    if (_data[hash].size() + 1 >= _maxLoadFactor) {
         rebalance();
-        hash = s.hash() % _n;
+        hash = s.hash() % _bucketsCount;
     }
 
     Word strCopy(s);
@@ -39,7 +44,7 @@ Value* HashTable::inc(const Word& s) {
 }
 
 Value* HashTable::get(const Word& s) const {
-    unsigned long hash = s.hash() % _n;
+    unsigned long hash = s.hash() % _bucketsCount;
 
     for (unsigned long i = 0; i < _data[hash].size(); ++i) {
         if (_data[hash][i]->word == s) {
@@ -51,13 +56,13 @@ Value* HashTable::get(const Word& s) const {
 }
 
 void HashTable::rebalance() {
-    _n <<= 1;
-    _m++;
-    _data.reserve(_n);
+    _bucketsCount <<= 1;
+    _maxLoadFactor++;
+    _data.reserve(_bucketsCount);
 
     for (unsigned long i = 0; i < _data.size(); ++i) {
         for (unsigned long j = 0; j < _data[i].size(); ++j) {
-            unsigned long hash = _data[i][j]->word.hash() % _n;
+            unsigned long hash = _data[i][j]->word.hash() % _bucketsCount;
 
             if (hash != i) {
                 _data[hash].push_back(_data[i][j]);

@@ -10,6 +10,7 @@ class WordCounter {
     static constexpr int _lettersCount = 26;
     unsigned long _size = 0;
     array<vector<HashTable>, _lettersCount> _data;
+
 public:
     WordCounter();
 
