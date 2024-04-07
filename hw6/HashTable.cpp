@@ -1,12 +1,10 @@
 #include "HashTable.h"
 #include "PrimeNumberGenerator.h"
 
-HashTable::HashTable() {
-    _data.resize(_bucketsCount);
-}
+#include <iostream>
 
-HashTable::HashTable(const PrimeNumberGenerator* const primes)
-    : _maxLoadFactor(0)
+HashTable::HashTable(PrimeNumberGenerator* primes)
+    : _maxLoadFactor(1)
     , _bucketsCount(13)
     , _primes(primes)
 {
@@ -21,8 +19,8 @@ HashTable::~HashTable() {
     }
 }
 
-Value* HashTable::inc(const Word& s) {
-    auto target = get(s);
+const Value* HashTable::inc(const Word& s) {
+    Value* target = get(s);
 
     if (target != nullptr) {
         target->count++;
@@ -30,13 +28,13 @@ Value* HashTable::inc(const Word& s) {
     }
 
     unsigned long hash = s.hash() % _bucketsCount;
-    if (_data[hash].size() + 1 >= _maxLoadFactor) {
+    if ((_size + 1) > _maxLoadFactor * _bucketsCount) {
         rebalance();
         hash = s.hash() % _bucketsCount;
     }
 
     Word strCopy(s);
-    auto pr = new Value{strCopy, 1};
+    auto pr = new Value{ strCopy, 1 };
     _data[hash].push_back(pr);
     _size++;
 
@@ -44,6 +42,8 @@ Value* HashTable::inc(const Word& s) {
 }
 
 Value* HashTable::get(const Word& s) const {
+    using std::swap;
+
     unsigned long hash = s.hash() % _bucketsCount;
 
     for (unsigned long i = 0; i < _data[hash].size(); ++i) {
@@ -56,23 +56,27 @@ Value* HashTable::get(const Word& s) const {
 }
 
 void HashTable::rebalance() {
-    _bucketsCount <<= 1;
-    _maxLoadFactor++;
-    _data.reserve(_bucketsCount);
+    using std::swap;
 
-    for (unsigned long i = 0; i < _data.size(); ++i) {
+    const unsigned long newBucketsCount = _primes->upperBound(_bucketsCount * 2);
+    vector<vector<Value*>> newBuckets;
+    newBuckets.resize(newBucketsCount, {});
+
+    for (unsigned long i = 0; i < _bucketsCount; ++i) {
         for (unsigned long j = 0; j < _data[i].size(); ++j) {
-            unsigned long hash = _data[i][j]->word.hash() % _bucketsCount;
-
-            if (hash != i) {
-                _data[hash].push_back(_data[i][j]);
-                swap(_data[i][j], _data[i][_data[i].size()-1]);
-                _data[i].pop_back();
-            }
+            unsigned long hash = _data[i][j]->word.hash() % newBucketsCount;
+            newBuckets[hash].push_back(_data[i][j]);
         }
     }
+
+    _bucketsCount = newBucketsCount;
+    _data = newBuckets;
 }
 
 unsigned long HashTable::size() const {
     return _size;
+}
+
+unsigned long HashTable::capacity() const {
+    return _bucketsCount;
 }

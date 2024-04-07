@@ -10,31 +10,33 @@ using namespace std;
 
 struct Value {
     Word word;
-    int count;
+    unsigned long count = 0;
 };
 
 class HashTable {
 private:
-    unsigned long _maxLoadFactor = 0;
+    unsigned long _maxLoadFactor = 1;
     unsigned long _bucketsCount = 0;
     unsigned long _size = 0;
-    const PrimeNumberGenerator* const _primes = nullptr;
+    PrimeNumberGenerator* _primes = nullptr;
     mutable vector<vector<Value*>> _data;
 
 public:
-    HashTable();
+    HashTable() = default;
 
-    HashTable(const PrimeNumberGenerator* const primes);
+    HashTable(PrimeNumberGenerator* primes);
 
     ~HashTable();
 
-    Value* inc(const Word& s);
+    const Value* inc(const Word& s);
 
     Value* get(const Word& s) const;
 
     void rebalance();
 
     unsigned long size() const;
+
+    unsigned long capacity() const;
 };
 
 #endif // HASHTABLE_H

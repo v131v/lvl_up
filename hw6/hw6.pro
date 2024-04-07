@@ -8,10 +8,12 @@ SOURCES += \
         PrimeNumberGenerator.cpp \
         Word.cpp \
         WordCounter.cpp \
-        main.cpp
+        main.cpp \
+        utils.cpp
 
 HEADERS += \
     HashTable.h \
     PrimeNumberGenerator.h \
     Word.h \
-    WordCounter.h
+    WordCounter.h \
+    utils.h

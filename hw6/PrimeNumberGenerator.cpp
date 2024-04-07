@@ -17,7 +17,7 @@ PrimeNumberGenerator::PrimeNumberGenerator(unsigned long n) {
     }
 }
 
-unsigned long PrimeNumberGenerator::upper_bound(unsigned long x) const {
+unsigned long PrimeNumberGenerator::upperBound(unsigned long x) const {
     if (maxValue() <= x) return 0;
 
     int left = 0;

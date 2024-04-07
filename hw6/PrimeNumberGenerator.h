@@ -11,7 +11,7 @@ private:
 public:
     PrimeNumberGenerator(unsigned long n);
 
-    unsigned long upper_bound(unsigned long x) const;
+    unsigned long upperBound(unsigned long x) const;
 
     unsigned long maxValue() const;
 };

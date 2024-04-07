@@ -2,14 +2,17 @@
 #define WORDCOUNTER_H
 
 #include "HashTable.h"
-#include <array>
+#include "PrimeNumberGenerator.h"
 
-using namespace std;
+#include <array>
+#include <vector>
 
 class WordCounter {
+private:
     static constexpr int _lettersCount = 26;
     unsigned long _size = 0;
-    array<vector<HashTable>, _lettersCount> _data;
+    std::array<std::vector<HashTable>, _lettersCount> _data = {};
+    PrimeNumberGenerator* _primes;
 
 public:
     WordCounter();

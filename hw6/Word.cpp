@@ -2,16 +2,17 @@
 
 #include <algorithm>
 #include <cstring>
+#include <fstream>
 
 Word::Word()
-    : _capacity(minCap)
+    : _capacity(minCapacity)
     , _length(0)
     , _data(new char[_capacity + 1]{})
     , _hash(0)
 {}
 
 Word::Word(const char* s)
-    : _capacity(std::min(strlen(s), minCap))
+    : _capacity(std::min(strlen(s), minCapacity))
     , _length(strlen(s))
     , _data(new char[_capacity + 1]{})
     , _hash(0)
@@ -58,10 +59,10 @@ void Word::swap(Word& other) noexcept {
 }
 
 bool operator == (const Word& a, const Word& b) {
-    if (a.hash() != b.hash() || a.length() != b.length()) {
+    if (a.hash() != b.hash() || a.size() != b.size()) {
         return false;
     }
-    return strncmp(a._data, b._data, a.length()) == 0;
+    return strncmp(a._data, b._data, a.size()) == 0;
 }
 
 bool operator != (const Word& a, const Word& b) {
@@ -75,14 +76,14 @@ Word operator + (const Word& a, const Word& b) {
 }
 
 Word& Word::operator += (const Word& other) {
-    if (other.length() == 0) {
+    if (other.size() == 0) {
         return *this;
     }
 
     if (_length + other._length > _capacity) {
-        _capacity = std::max(minCap, std::max(_capacity * 2, _length + other._length));
+        _capacity = std::max(minCapacity, std::max(_capacity * 2, _length + other._length));
 
-        char* result = new char[_capacity + 1];
+        char* result = new char[_capacity + 1]{};
 
         strncpy(result, _data, _length);
         delete[] _data;
@@ -103,9 +104,9 @@ Word& Word::operator += (const Word& other) {
 
 Word& Word::operator += (char c) {
     if (_length + 1 > _capacity) {
-        _capacity = std::max(minCap, std::max(_capacity * 2, _length + 1));
+        _capacity = std::max(minCapacity, std::max(_capacity * 2, _length + 1));
 
-        char* result = new char[_capacity + 1];
+        char* result = new char[_capacity + 1]{};
 
         strncpy(result, _data, _length);
         delete[] _data;
@@ -117,7 +118,7 @@ Word& Word::operator += (char c) {
     ++_length;
 
     _hash = (_hash * hashBase) % hashMod;
-    _hash = (_hash + (c-'a')) % hashMod;
+    _hash = (_hash + (c-'a' + 1)) % hashMod;
 
     return *this;
 }
@@ -142,7 +143,23 @@ const char& Word::operator [] (int i) const {
     return _data[i];
 }
 
-unsigned long Word::length() const {
+std::istream& operator >> (std::istream& in, Word& s) {
+    s = "";
+
+    for (char c = in.get(); !in.eof() && !isspace(c); c = in.get()) {
+        if (c > 'z' || c < 'a') {
+            if (c <= 'Z' && c >= 'A') {
+                s += (c-'A'+'a');
+            }
+            continue;
+        }
+        s += c;
+    }
+
+    return in;
+}
+
+unsigned long Word::size() const {
     return _length;
 }
 
@@ -163,7 +180,7 @@ unsigned long long Word::hash() const {
     if (hash == 0) {
         for (unsigned long i = 0; i < _length; ++i) {
             hash = (hash * hashBase) % hashMod;
-            hash = (hash + _data[i] - 'a') % hashMod;
+            hash = (hash + _data[i] - 'a' + 1) % hashMod;
         }
     }
 

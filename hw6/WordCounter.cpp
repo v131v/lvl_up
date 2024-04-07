@@ -1,30 +1,41 @@
 #include "WordCounter.h"
+#include "PrimeNumberGenerator.h"
+
+#include <iostream>
 
 WordCounter::WordCounter() {
-    for (int i = 0; i < _lettersCount; ++i) {
-        _data[i].resize(Word::minCap);
+    _primes = new PrimeNumberGenerator(1e7);
+
+    for (unsigned long i = 0; i < _lettersCount; ++i) {
+        _data[i].reserve(Word::minCapacity);
+
+        for (unsigned long j = 0; j < Word::minCapacity; ++j) {
+            _data[i].push_back({ _primes });
+        }
     }
 }
 
-WordCounter::~WordCounter() {}
+WordCounter::~WordCounter() {
+    delete _primes;
+}
 
 void WordCounter::inc(const Word& s) {
-    if (_data[s[0]-'a'].size() < s.length()) {
-        _data[s[0]-'a'].resize(s.length());
+    if (_data[s[0]-'a'].size() < s.size()) {
+        _data[s[0]-'a'].resize(s.size(), { _primes });
     }
 
-    const int cnt = _data[s[0]-'a'][s.length()-1].inc(s)->count;
+    const int cnt = _data[s[0]-'a'][s.size()-1].inc(s)->count;
     if (cnt == 1) {
         _size++;
     }
 }
 
 int WordCounter::get(const Word& s) const {
-    if (_data[s[0]-'a'].size() < s.length()) {
+    if (_data[s[0]-'a'].size() < s.size()) {
         return 0;
     }
 
-    const auto target = _data[s[0]-'a'][s.length()-1].get(s);
+    const auto target = _data[s[0]-'a'][s.size()-1].get(s);
     if (target == nullptr) {
         return 0;
     }
